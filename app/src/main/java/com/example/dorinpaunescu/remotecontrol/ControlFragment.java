@@ -124,11 +124,11 @@ public class ControlFragment extends Fragment {
         });*/
 
         final TextView tView = (TextView)view.findViewById(R.id.textViewOutput);
-        Button buttonUp = (Button)view.findViewById(R.id.buttonMoveUp);
-        Button buttonLeft = (Button)view.findViewById(R.id.buttonMoveLeft);
-        Button buttonRight = (Button)view.findViewById(R.id.buttonMoveRight);
-        Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
-        Button buttonStop = (Button)view.findViewById(R.id.stopButton);
+        final Button buttonUp = (Button)view.findViewById(R.id.buttonMoveUp);
+        final Button buttonLeft = (Button)view.findViewById(R.id.buttonMoveLeft);
+        final Button buttonRight = (Button)view.findViewById(R.id.buttonMoveRight);
+        final Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
+        final Button buttonStop = (Button)view.findViewById(R.id.stopButton);
 
         final class ControllerOnClickListener implements View.OnClickListener{
 
@@ -140,11 +140,15 @@ public class ControlFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
+
+                if(view.equals(buttonStop)) {
+                    System.out.println("Button stop clicked");
+                }
+
                 System.out.println("Performing action...");
 
                 ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
                 RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
-                remoteController.testGet();
 
                 remoteController.sendCommand(command);
             }
