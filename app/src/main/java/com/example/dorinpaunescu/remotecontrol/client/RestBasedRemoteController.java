@@ -71,12 +71,13 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
             @Override
             public void failure(RetrofitError error) {
                 System.out.println("Error");
-                if(observer != null) {
-                    observer.setText("Connectivity Error");
+                if(observer != null && error != null) {
+                    String localizedMessage = error.getLocalizedMessage();
+                    observer.setText("Connectivity Error: " + localizedMessage);
                 }
                 JSONObject resp = new JSONObject();
                 try {
-                    resp.put("status", error.getResponse().getStatus());
+                    resp.put("status", error.getBody());
                     resp.put("error", error.getMessage());
                     resp.put("payload", payload);
 
@@ -148,9 +149,10 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
             return response.newBuilder().body(ResponseBody.create(response.body().contentType(), content)).build();
         }
         catch (Throwable exception) {
+            System.out.println("---------------------FATAL ERROR------------------");
             exception.printStackTrace();
+            System.out.println("---------------------FATAL ERROR END------------------");
+            throw exception;
         }
-
-        return chain.proceed(chain.request());
     }
 }
