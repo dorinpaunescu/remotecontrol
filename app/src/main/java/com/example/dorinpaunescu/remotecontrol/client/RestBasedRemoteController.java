@@ -1,16 +1,20 @@
 package com.example.dorinpaunescu.remotecontrol.client;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.rest.RobotControlRestProtocol;
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
@@ -58,7 +62,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                     if(observer != null) {
                         observer.setText(resp.toString());
                     }
-                } catch (JSONException e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
 
@@ -67,15 +71,16 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
             @Override
             public void failure(RetrofitError error) {
                 System.out.println("Error");
+                if(observer != null) {
+                    observer.setText("Connectivity Error");
+                }
                 JSONObject resp = new JSONObject();
                 try {
                     resp.put("status", error.getResponse().getStatus());
                     resp.put("error", error.getMessage());
                     resp.put("payload", payload);
-                    if(observer != null) {
-                        observer.setText(resp.toString());
-                    }
-                } catch (JSONException e) {
+
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
             }
@@ -117,8 +122,14 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
         User user = new User(properties.get(Constants.USERNAME), properties.get(Constants.PASSWORD));
 
         final OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setReadTimeout(120, TimeUnit.SECONDS);
-        okHttpClient.setConnectTimeout(120, TimeUnit.SECONDS);
+        okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
+        okHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
+        okHttpClient.interceptors().add(new Interceptor() {
+            @Override
+            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+                return onOnIntercept(chain);
+            }
+        });
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(new ApiRequestInterceptor(user))
@@ -128,5 +139,18 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 .build();
         communicatorInterface = restAdapter.create(RobotControlRestProtocol.class);
 
+    }
+
+    private com.squareup.okhttp.Response onOnIntercept(Interceptor.Chain chain) throws IOException {
+        try {
+            com.squareup.okhttp.Response response = chain.proceed(chain.request());
+            String content = "Fatal error";
+            return response.newBuilder().body(ResponseBody.create(response.body().contentType(), content)).build();
+        }
+        catch (Throwable exception) {
+            exception.printStackTrace();
+        }
+
+        return chain.proceed(chain.request());
     }
 }

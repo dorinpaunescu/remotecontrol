@@ -134,15 +134,15 @@ public class ControlFragment extends Fragment {
 
         final class ControllerOnClickListener implements View.OnClickListener{
 
+            ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+            RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
+
             public ControllerOnClickListener(){
                 lastMovement = new MovementEnvelope("0", "0");
             }
 
             @Override
             public void onClick(View view) {
-
-                ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
-                RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
 
                 if(buttonLeft.equals(view)) {
                     if(lastMovement != null) {
