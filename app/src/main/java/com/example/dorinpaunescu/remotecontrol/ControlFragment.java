@@ -128,6 +128,7 @@ public class ControlFragment extends Fragment {
         Button buttonLeft = (Button)view.findViewById(R.id.buttonMoveLeft);
         Button buttonRight = (Button)view.findViewById(R.id.buttonMoveRight);
         Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
+        Button buttonStop = (Button)view.findViewById(R.id.stopButton);
 
         final class ControllerOnClickListener implements View.OnClickListener{
 
@@ -153,14 +154,8 @@ public class ControlFragment extends Fragment {
         buttonDown.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
         buttonLeft.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
         buttonRight.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
-        /*buttonUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
-                RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
-                remoteController.testGet();
-            }
-        });*/
+        buttonStop.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("0","0")));
+
         return view;
     }
 
