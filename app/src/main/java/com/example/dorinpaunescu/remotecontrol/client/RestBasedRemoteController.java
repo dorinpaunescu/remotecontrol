@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.rest.RobotControlRestProtocol;
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -114,11 +116,17 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
         User user = new User(properties.get(Constants.USERNAME), properties.get(Constants.PASSWORD));
 
+        final OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setReadTimeout(120, TimeUnit.SECONDS);
+        okHttpClient.setConnectTimeout(120, TimeUnit.SECONDS);
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(new ApiRequestInterceptor(user))
                 .setEndpoint(properties.get(Constants.URL))
                 .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setClient(new OkClient(okHttpClient))
                 .build();
         communicatorInterface = restAdapter.create(RobotControlRestProtocol.class);
+
     }
 }

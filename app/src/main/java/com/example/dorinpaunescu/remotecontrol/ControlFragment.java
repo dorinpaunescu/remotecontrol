@@ -148,7 +148,7 @@ public class ControlFragment extends Fragment {
                     case MotionEvent.ACTION_DOWN:
                         if (mHandler != null) return true;
                         mHandler = new Handler();
-                        mHandler.postDelayed(mAction, 250);
+                        mHandler.postDelayed(mAction, 1000);
                         break;
                     case MotionEvent.ACTION_UP:
                         if (mHandler == null) return true;
@@ -176,7 +176,7 @@ public class ControlFragment extends Fragment {
 
                     remoteController.sendCommand(obj);
 
-                    mHandler.postDelayed(this, 250);
+                    mHandler.postDelayed(this, 1000);
 
                 }
             };
