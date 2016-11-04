@@ -51,6 +51,8 @@ public class ControlFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private MovementEnvelope lastMovement;
+
     public ControlFragment() {
         // Required empty public constructor
     }
@@ -132,33 +134,102 @@ public class ControlFragment extends Fragment {
 
         final class ControllerOnClickListener implements View.OnClickListener{
 
-            private Object command;
-
-            public ControllerOnClickListener(Object command){
-                this.command = command;
+            public ControllerOnClickListener(){
+                lastMovement = new MovementEnvelope("0", "0");
             }
 
             @Override
             public void onClick(View view) {
 
-                if(view.equals(buttonStop)) {
-                    System.out.println("Button stop clicked");
-                }
-
-                System.out.println("Performing action...");
-
                 ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
                 RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
 
-                remoteController.sendCommand(command);
+                if(buttonLeft.equals(view)) {
+                    if(lastMovement != null) {
+                        int lastLeft = Integer.parseInt(lastMovement.left);
+                        int lastRight = Integer.parseInt(lastMovement.right);
+                        int newLeft = lastLeft - 10;
+                        int newRight = lastRight + 10;
+                        MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
+                        remoteController.sendCommand(leftEnvelope);
+                    } else {
+
+                    }
+                    try {
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
+                        System.out.println("Resume ...");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    remoteController.sendCommand(lastMovement);
+
+                    return;
+                }
+
+                if(buttonRight.equals(view)) {
+                    if(lastMovement != null) {
+                        int lastLeft = Integer.parseInt(lastMovement.left);
+                        int lastRight = Integer.parseInt(lastMovement.right);
+                        int newLeft = lastLeft + 10;
+                        int newRight = lastRight - 10;
+                        MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
+                        remoteController.sendCommand(leftEnvelope);
+                    } else {
+
+                    }
+                    try {
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
+                        System.out.println("Resume ...");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    remoteController.sendCommand(lastMovement);
+
+                    return;
+                }
+
+                if(buttonUp.equals(view)) {
+                    remoteController.sendCommand(new MovementEnvelope("0", "0"));
+                    try {
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
+                        System.out.println("Resume ...");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    remoteController.sendCommand(new MovementEnvelope("120", "120"));
+                    lastMovement = new MovementEnvelope("120", "120");
+                }
+
+                if(buttonDown.equals(view)) {
+                    remoteController.sendCommand(new MovementEnvelope("0", "0"));
+                    try {
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
+                        System.out.println("Resume ...");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    remoteController.sendCommand(new MovementEnvelope("-120", "-120"));
+                    lastMovement = new MovementEnvelope("-120", "-120");
+                }
+
+                if(buttonStop.equals(view)) {
+                    remoteController.sendCommand(new MovementEnvelope("0", "0"));
+                    lastMovement = new MovementEnvelope("0", "0");
+                }
             }
         }
 
-        buttonUp.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
-        buttonDown.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
-        buttonLeft.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
-        buttonRight.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
-        buttonStop.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("0","0")));
+        ControllerOnClickListener contOnClick = new ControllerOnClickListener();
+
+        buttonUp.setOnClickListener(contOnClick);
+        buttonDown.setOnClickListener(contOnClick);
+        buttonLeft.setOnClickListener(contOnClick);
+        buttonRight.setOnClickListener(contOnClick);
+        buttonStop.setOnClickListener(contOnClick);
 
         return view;
     }
