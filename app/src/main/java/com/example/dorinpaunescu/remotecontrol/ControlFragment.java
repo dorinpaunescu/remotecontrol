@@ -148,8 +148,14 @@ public class ControlFragment extends Fragment {
                     if(lastMovement != null) {
                         int lastLeft = Integer.parseInt(lastMovement.left);
                         int lastRight = Integer.parseInt(lastMovement.right);
+
                         int newLeft = lastLeft - 10;
                         int newRight = lastRight + 10;
+                        if(lastLeft == 0 && lastRight == 0) {
+                            newLeft = lastLeft + 50;
+                            newRight = lastRight - 50;
+                        }
+
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
                     } else {
@@ -171,8 +177,13 @@ public class ControlFragment extends Fragment {
                     if(lastMovement != null) {
                         int lastLeft = Integer.parseInt(lastMovement.left);
                         int lastRight = Integer.parseInt(lastMovement.right);
-                        int newLeft = lastLeft + 10;
-                        int newRight = lastRight - 10;
+
+                        int newLeft = lastLeft - 10;
+                        int newRight = lastRight + 10;
+                        if(lastLeft == 0 && lastRight == 0) {
+                            newLeft = lastLeft + 50;
+                            newRight = lastRight - 50;
+                        }
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
                     } else {
