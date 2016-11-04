@@ -13,7 +13,7 @@ import retrofit.http.POST;
  */
 public interface RobotControlRestProtocol {
     // This method is used for "POST"
-    @POST("/send/command")
+    @POST("/testpost")
     void sendCommand(@Body JSONObject payload,  Callback<Response> serverResponseCallback);
 
     @GET("/headers")

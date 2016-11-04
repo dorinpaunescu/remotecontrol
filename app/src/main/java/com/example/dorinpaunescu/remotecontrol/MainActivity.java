@@ -1,7 +1,9 @@
 package com.example.dorinpaunescu.remotecontrol;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ControlFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
 

@@ -1,18 +1,37 @@
 package com.example.dorinpaunescu.remotecontrol;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
 import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 
 /**
@@ -32,6 +51,7 @@ public class ControlFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,20 +86,114 @@ public class ControlFragment extends Fragment {
         }
     }
 
+    /**
+     * Receiving speech input
+     * */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_control, container, false);
+
+       /* Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
+        buttonDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String clientId = MqttClient.generateClientId();
+                MqttAndroidClient client =
+                        new MqttAndroidClient(getContext(), "tcp://broker.hivemq.com:1883",
+                                clientId);
+
+                try {
+                    IMqttToken token = client.connect();
+                    token.setActionCallback(new IMqttActionListener() {
+                        @Override
+                        public void onSuccess(IMqttToken asyncActionToken) {
+                            // We are connected
+                            System.out.println("We are connected");
+                        }
+
+                        @Override
+                        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                            // Something went wrong e.g. connection timeout or firewall problems
+                            System.out.println("Connection failure");
+
+                        }
+                    });
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        });*/
+
+        final TextView tView = (TextView)view.findViewById(R.id.textViewOutput);
         Button buttonUp = (Button)view.findViewById(R.id.buttonMoveUp);
-        buttonUp.setOnClickListener(new View.OnClickListener() {
+        Button buttonLeft = (Button)view.findViewById(R.id.buttonMoveLeft);
+        Button buttonRight = (Button)view.findViewById(R.id.buttonMoveRight);
+        Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
+
+        final class ControllerOnTouchListener implements View.OnTouchListener{
+
+            private Handler mHandler;
+            private final String command;
+
+            public ControllerOnTouchListener(String command){
+                this.command = command;
+            }
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (mHandler != null) return true;
+                        mHandler = new Handler();
+                        mHandler.postDelayed(mAction, 250);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (mHandler == null) return true;
+                        mHandler.removeCallbacks(mAction);
+                        mHandler = null;
+                        break;
+                }
+                return false;
+            }
+
+            Runnable mAction = new Runnable() {
+                @Override public void run() {
+                    System.out.println("Performing action...");
+
+                    ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+                    RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
+                    remoteController.testGet();
+
+                    JSONObject obj = new JSONObject();
+                    try {
+                        obj.put("command", command);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    remoteController.sendCommand(obj);
+
+                    mHandler.postDelayed(this, 250);
+
+                }
+            };
+        }
+
+        buttonUp.setOnTouchListener(new ControllerOnTouchListener("Up"));
+        buttonDown.setOnTouchListener(new ControllerOnTouchListener("Down"));
+        buttonLeft.setOnTouchListener(new ControllerOnTouchListener("Left"));
+        buttonRight.setOnTouchListener(new ControllerOnTouchListener("Right"));
+        /*buttonUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
                 RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
                 remoteController.testGet();
             }
-        });
+        });*/
         return view;
     }
 
@@ -121,4 +235,6 @@ public class ControlFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

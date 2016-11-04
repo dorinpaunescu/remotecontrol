@@ -1,5 +1,8 @@
 package com.example.dorinpaunescu.remotecontrol.factory;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
 import com.example.dorinpaunescu.remotecontrol.client.RestBasedRemoteController;
 
@@ -11,10 +14,10 @@ public class RemoteControllerFactory implements ResourceManagerFactory{
     public static String REST_BASED_REMOTE_CONTROLLER = "REST_BASED_REMOTE_CONTROLLER";
 
     @Override
-    public RemoteControllerProtocol createRemoteController(String remoteControllerType) {
+    public RemoteControllerProtocol createRemoteController(String remoteControllerType, View observer) {
 
         if(remoteControllerType.equalsIgnoreCase(REST_BASED_REMOTE_CONTROLLER)) {
-            return new RestBasedRemoteController();
+            return new RestBasedRemoteController((TextView) observer);
         }
 
         return null;

@@ -1,9 +1,13 @@
 package com.example.dorinpaunescu.remotecontrol.client;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.rest.RobotControlRestProtocol;
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
@@ -23,13 +27,15 @@ import retrofit.mime.TypedByteArray;
 public class RestBasedRemoteController implements RemoteControllerProtocol {
 
     RobotControlRestProtocol communicatorInterface;
+    TextView observer;
 
-    public RestBasedRemoteController(){
+    public RestBasedRemoteController(TextView observer){
+        this.observer = observer;
         initRestService();
     }
 
     @Override
-    public JSONObject sendCommand(JSONObject payload) {
+    public JSONObject sendCommand(final JSONObject payload) {
 
         Callback<Response> callback = new Callback<Response>() {
 
@@ -42,14 +48,37 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 TypedByteArray body = (TypedByteArray) response.getBody();
                 String outputStr = new String(body.getBytes());
                 System.out.print(outputStr);
+
+                JSONObject resp = new JSONObject();
+                try {
+                    resp.put("status", response.getStatus());
+                    resp.put("payload", payload);
+                    if(observer != null) {
+                        observer.setText(resp.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                System.out.println("Error");
+                JSONObject resp = new JSONObject();
+                try {
+                    resp.put("status", error.getResponse().getStatus());
+                    resp.put("error", error.getMessage());
+                    resp.put("payload", payload);
+                    if(observer != null) {
+                        observer.setText(resp.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         };
-        communicatorInterface.sendCommand(null, callback);
+        communicatorInterface.sendCommand(payload, callback);
 
         return null;
     }
