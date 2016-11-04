@@ -37,7 +37,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
     }
 
     @Override
-    public JSONObject sendCommand(final JSONObject payload) {
+    public JSONObject sendCommand(final Object payload) {
 
         Callback<Response> callback = new Callback<Response>() {
 

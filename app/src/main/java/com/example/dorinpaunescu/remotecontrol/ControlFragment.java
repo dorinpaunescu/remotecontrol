@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
+import com.example.dorinpaunescu.remotecontrol.envelope.MovementEnvelope;
 import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
@@ -86,7 +87,7 @@ public class ControlFragment extends Fragment {
      * */
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_control, container, false);
@@ -128,59 +129,30 @@ public class ControlFragment extends Fragment {
         Button buttonRight = (Button)view.findViewById(R.id.buttonMoveRight);
         Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
 
-        final class ControllerOnTouchListener implements View.OnTouchListener{
+        final class ControllerOnClickListener implements View.OnClickListener{
 
-            private Handler mHandler;
-            private final String command;
+            private Object command;
 
-            public ControllerOnTouchListener(String command){
+            public ControllerOnClickListener(Object command){
                 this.command = command;
             }
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        if (mHandler != null) return true;
-                        mHandler = new Handler();
-                        mHandler.postDelayed(mAction, 1000);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (mHandler == null) return true;
-                        mHandler.removeCallbacks(mAction);
-                        mHandler = null;
-                        break;
-                }
-                return false;
+            public void onClick(View view) {
+                System.out.println("Performing action...");
+
+                ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+                RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
+                remoteController.testGet();
+
+                remoteController.sendCommand(command);
             }
-
-            Runnable mAction = new Runnable() {
-                @Override public void run() {
-                    System.out.println("Performing action...");
-
-                    ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
-                    RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
-                    remoteController.testGet();
-
-                    JSONObject obj = new JSONObject();
-                    try {
-                        obj.put("command", command);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    remoteController.sendCommand(obj);
-
-                    mHandler.postDelayed(this, 1000);
-
-                }
-            };
         }
 
-        buttonUp.setOnTouchListener(new ControllerOnTouchListener("Up"));
-        buttonDown.setOnTouchListener(new ControllerOnTouchListener("Down"));
-        buttonLeft.setOnTouchListener(new ControllerOnTouchListener("Left"));
-        buttonRight.setOnTouchListener(new ControllerOnTouchListener("Right"));
+        buttonUp.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
+        buttonDown.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
+        buttonLeft.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
+        buttonRight.setOnClickListener(new ControllerOnClickListener(new MovementEnvelope("120","120")));
         /*buttonUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
