@@ -9,6 +9,14 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
+import com.example.dorinpaunescu.remotecontrol.envelope.AccelerometerEnvelope;
+import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
+import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
+import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
+
+import java.util.Date;
+
 public class SensorActivity implements SensorEventListener {
 
   private TextView txX;
@@ -26,6 +34,7 @@ public class SensorActivity implements SensorEventListener {
     // Do something here if sensor accuracy changes.
   }
 
+  private Date last = new Date();
   @Override
   public final void onSensorChanged(SensorEvent event) {
     // The light sensor returns a single value.
@@ -38,6 +47,18 @@ public class SensorActivity implements SensorEventListener {
     this.txY.setText("Y=" + y);
     this.txZ.setText("Z=" + z);
     // Do something with this sensor value.
+    try{
+      Date now = new Date();
+      if(now.getTime() - last.getTime() > 2000) {
+        AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
+        ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+        RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, null);
+        remoteController.sendAccelerometerDate(ae);
+        last = now;
+      }
+    }catch (Throwable ex) {
+
+    }
   }
 
 }

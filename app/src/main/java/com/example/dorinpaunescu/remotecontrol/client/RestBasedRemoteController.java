@@ -93,6 +93,44 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
     }
 
     @Override
+    public JSONObject sendAccelerometerDate(final Object payload) {
+        Callback<Response> callback = new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response response2) {
+                int status = response.getStatus();
+
+                System.out.println("Status: " + status);
+
+                TypedByteArray body = (TypedByteArray) response.getBody();
+                String outputStr = new String(body.getBytes());
+                System.out.print(outputStr);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                System.out.println("Error");
+                if(observer != null && error != null) {
+                    String localizedMessage = error.getLocalizedMessage();
+                    observer.setText("Connectivity Error: " + localizedMessage);
+                }
+                JSONObject resp = new JSONObject();
+                try {
+                    resp.put("status", error.getBody());
+                    resp.put("error", error.getMessage());
+                    resp.put("payload", payload);
+
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        communicatorInterface.sendAccelerometer(payload, callback);
+
+        return null;
+    }
+
+    @Override
     public String testGet() {
         Callback<Response> callback = new Callback<Response>() {
 

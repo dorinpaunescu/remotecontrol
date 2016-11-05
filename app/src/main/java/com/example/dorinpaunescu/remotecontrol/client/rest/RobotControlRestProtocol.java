@@ -18,6 +18,9 @@ public interface RobotControlRestProtocol {
     @POST("/testpost")
     void sendCommand(@Body Object payload, Callback<Response> serverResponseCallback);
 
+    @POST("/send/accelerometer")
+    void sendAccelerometer(@Body Object payload, Callback<Response> serverResponseCallback);
+
     @GET("/headers")
     void testGet(Callback<Response> serverResponseCallback);
 }

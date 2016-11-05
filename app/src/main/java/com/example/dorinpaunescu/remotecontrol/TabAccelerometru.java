@@ -147,7 +147,7 @@ public class TabAccelerometru extends Fragment{
                     mSensorManager.unregisterListener(sensorListener);
                 }
             }
-        }catch (Exception e) {
+        }catch (Throwable e) {
             System.out.println("Critical exception in accelerometer view");
             e.printStackTrace();
         }
