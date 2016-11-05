@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.rest.RobotControlRestProtocol;
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.ResponseBody;
@@ -57,8 +58,9 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
                 JSONObject resp = new JSONObject();
                 try {
+                    Gson gson = new Gson();
                     resp.put("status", response.getStatus());
-                    resp.put("payload", payload);
+                    resp.put("payload", gson.toJson(payload));
                     if(observer != null) {
                         observer.setText(resp.toString());
                     }

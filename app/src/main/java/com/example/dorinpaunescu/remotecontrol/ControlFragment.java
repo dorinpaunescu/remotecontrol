@@ -153,8 +153,8 @@ public class ControlFragment extends Fragment {
                         int newLeft = lastLeft - 10;
                         int newRight = lastRight + 10;
                         if(lastLeft == 0 && lastRight == 0) {
-                            newLeft = lastLeft + 50;
-                            newRight = lastRight - 50;
+                            newLeft = lastLeft - 50;
+                            newRight = lastRight + 50;
                         }
 
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
