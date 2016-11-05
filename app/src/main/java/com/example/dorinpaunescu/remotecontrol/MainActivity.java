@@ -27,7 +27,9 @@ import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ControlFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ControlFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener
+        ,TabAccelerometru.OnFragmentInteractionListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -124,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
                     return new ControlFragment();
                 case 1:
                     return new SettingsFragment();
+                case 2:
+                    return new TabAccelerometru();
+
             }
 
             return null;
@@ -132,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
@@ -142,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
                     return "Control";
                 case 1:
                     return "Settings";
+                case 2:
+                    return "Accelerometru";
             }
             return null;
         }

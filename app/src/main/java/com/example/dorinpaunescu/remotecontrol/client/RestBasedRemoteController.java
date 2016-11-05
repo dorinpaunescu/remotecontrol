@@ -148,7 +148,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
     private com.squareup.okhttp.Response onOnIntercept(Interceptor.Chain chain) throws IOException {
         try {
             com.squareup.okhttp.Response response = chain.proceed(chain.request());
-            String content = "Fatal error";
+            String content = "Successfull";
             return response.newBuilder().body(ResponseBody.create(response.body().contentType(), content)).build();
         }
         catch (Throwable exception) {
