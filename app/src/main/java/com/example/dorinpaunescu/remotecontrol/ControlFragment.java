@@ -159,8 +159,6 @@ public class ControlFragment extends Fragment {
 
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
-                    } else {
-
                     }
                     try {
                         System.out.println("Sleep for 1000 ms");
@@ -187,9 +185,8 @@ public class ControlFragment extends Fragment {
                         }
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
-                    } else {
-
                     }
+
                     try {
                         System.out.println("Sleep for 1000 ms");
                         Thread.sleep(1000);

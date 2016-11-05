@@ -141,6 +141,8 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 .build();
         communicatorInterface = restAdapter.create(RobotControlRestProtocol.class);
 
+
+
     }
 
     private com.squareup.okhttp.Response onOnIntercept(Interceptor.Chain chain) throws IOException {
