@@ -67,7 +67,6 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
