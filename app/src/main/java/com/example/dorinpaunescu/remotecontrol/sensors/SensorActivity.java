@@ -50,6 +50,7 @@ public class SensorActivity implements SensorEventListener {
     try{
       Date now = new Date();
       if(now.getTime() - last.getTime() > 2000) {
+        System.out.println("onSensorChanged");
         AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
         ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
         RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, null);

@@ -78,15 +78,15 @@ public class TabAccelerometru extends Fragment{
         if (mSensorManager == null) {
             mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         }
+
         if (accelerometerSensor == null) {
             accelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         }
         View view = inflater.inflate(R.layout.fragment_tab_accelerometru, container, false);
-        if (sensorListener == null) {
             sensorListener = new SensorActivity((TextView) view.findViewById(R.id.textViewX),
                     (TextView) view.findViewById(R.id.textViewY),
                     (TextView) view.findViewById(R.id.textViewZ));
-        }
+
         mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 // Inflate the layout for this fragment
         return view;
@@ -137,10 +137,10 @@ public class TabAccelerometru extends Fragment{
         System.out.println("Is visible " + isVisibleToUser);
         try {
             if (isVisibleToUser) {
-                System.out.println("Register sensor listener");
+                /*System.out.println("Register sensor listener");
                 if(mSensorManager!= null) {
                     mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-                }
+                }*/
             } else {
                 System.out.println("Deregister sensor listener");
                 if(mSensorManager!=null) {

@@ -191,7 +191,8 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
         }
         catch (Throwable exception) {
             System.out.println("---------------------FATAL ERROR------------------");
-            exception.printStackTrace();
+            System.out.println(exception.getMessage());
+            System.out.println(exception.getLocalizedMessage());
             System.out.println("---------------------FATAL ERROR END------------------");
             throw exception;
         }
