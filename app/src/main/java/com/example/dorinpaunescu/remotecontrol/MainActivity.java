@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+       mViewPager.setOffscreenPageLimit(0);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

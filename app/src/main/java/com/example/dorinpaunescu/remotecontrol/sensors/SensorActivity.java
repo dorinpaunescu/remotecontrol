@@ -23,6 +23,18 @@ public class SensorActivity implements SensorEventListener {
   private TextView txY;
   private TextView txZ;
 
+  public void setTxX(TextView txX) {
+    this.txX = txX;
+  }
+
+  public void setTxY(TextView txY) {
+    this.txY = txY;
+  }
+
+  public void setTxZ(TextView txZ) {
+    this.txZ = txZ;
+  }
+
   public SensorActivity(TextView txX, TextView txY, TextView txZ){
     this.txX = txX;
     this.txY = txY;
@@ -43,9 +55,17 @@ public class SensorActivity implements SensorEventListener {
     float x = event.values[0];
     float y = event.values[1];
     float z = event.values[2];
-    this.txX.setText("X=" + x);
-    this.txY.setText("Y=" + y);
-    this.txZ.setText("Z=" + z);
+
+    if(this.txX != null) {
+      this.txX.setText("X=" + x);
+    }
+    if(this.txY != null) {
+      this.txY.setText("Y=" + y);
+    }
+
+    if(this.txZ != null) {
+      this.txZ.setText("Z=" + z);
+    }
     // Do something with this sensor value.
     try{
       Date now = new Date();
