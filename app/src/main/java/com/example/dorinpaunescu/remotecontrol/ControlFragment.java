@@ -146,10 +146,7 @@ public class ControlFragment extends Fragment {
                 RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
 
                 if(buttonLeft.equals(view)) {
-                    MovementEnvelope leftEnvelope = new MovementEnvelope("0","200");
-                    remoteController.sendCommand(leftEnvelope);
-
-                    /*if(lastMovement != null) {
+                    if(lastMovement != null) {
                         int lastLeft = Integer.parseInt(lastMovement.left);
                         int lastRight = Integer.parseInt(lastMovement.right);
 
@@ -168,8 +165,11 @@ public class ControlFragment extends Fragment {
 
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
-                    }
 
+                        if(lastLeft == 0 && lastRight == 0) {
+                            return;
+                        }
+                    }
 
                     try {
                         System.out.println("Sleep for 700 ms");
@@ -178,17 +178,13 @@ public class ControlFragment extends Fragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    remoteController.sendCommand(lastMovement);*/
+                    remoteController.sendCommand(lastMovement);
 
                     return;
                 }
 
                 if(buttonRight.equals(view)) {
-
-                    MovementEnvelope leftEnvelope = new MovementEnvelope("200","0");
-                    remoteController.sendCommand(leftEnvelope);
-
-                    /*if(lastMovement != null) {
+                    if(lastMovement != null) {
                         int lastLeft = Integer.parseInt(lastMovement.left);
                         int lastRight = Integer.parseInt(lastMovement.right);
 
@@ -207,6 +203,10 @@ public class ControlFragment extends Fragment {
 
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
+
+                        if(lastLeft == 0 && lastRight == 0) {
+                            return;
+                        }
                     }
 
                     try {
@@ -216,7 +216,7 @@ public class ControlFragment extends Fragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    remoteController.sendCommand(lastMovement);*/
+                    remoteController.sendCommand(lastMovement);
 
                     return;
                 }
