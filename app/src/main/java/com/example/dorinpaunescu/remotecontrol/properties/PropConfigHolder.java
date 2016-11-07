@@ -50,21 +50,21 @@ public class PropConfigHolder {
 
         String URL = settings.getString("URL", Constants.EMPTY_STRING);
         if(URL == null) {
-            properties.put("URL", Constants.EMPTY_STRING);
+            properties.put("URL", "http://sample.com");
         } else {
             properties.put("URL", URL);
         }
 
         String USERNAME = settings.getString("USERNAME", Constants.EMPTY_STRING);
         if(USERNAME == null) {
-            properties.put("USERNAME", Constants.EMPTY_STRING);
+            properties.put("USERNAME", "Edit Username");
         } else {
             properties.put("USERNAME", USERNAME);
         }
 
         String PASSWORD = settings.getString("PASSWORD", Constants.EMPTY_STRING);
         if(PASSWORD == null) {
-            properties.put("PASSWORD", Constants.EMPTY_STRING);
+            properties.put("PASSWORD", "Edit Password");
         } else {
             properties.put("PASSWORD", PASSWORD);
         }

@@ -16,11 +16,12 @@ import retrofit.http.POST;
  */
 public interface RobotControlRestProtocol {
     // This method is used for "POST"
+    //this is synchronous operation
     @Headers({
             "Content-Type: application/json"
     })
     @POST("/testpost")
-    void sendCommand(@Body Object payload, Callback<Response> serverResponseCallback);
+    Response sendCommand(@Body Object payload);
 
     @Headers({
             "Content-Type: application/json"

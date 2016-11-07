@@ -1,9 +1,15 @@
 package com.example.dorinpaunescu.remotecontrol.client;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.dorinpaunescu.remotecontrol.MainActivity;
 import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.rest.RobotControlRestProtocol;
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
@@ -35,20 +41,35 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
     RobotControlRestProtocol communicatorInterface;
     TextView observer;
+    Activity activity;
 
     public RestBasedRemoteController(TextView observer){
         this.observer = observer;
+        if(observer != null) {
+            activity = getActivity(observer);
+        }
         initRestService();
+
+    }
+
+    public Activity getActivity(View view) {
+        Context context = view.getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
     }
 
     @Override
     public JSONObject sendCommand(final Object payload) {
+        try {
+            Response response = communicatorInterface.sendCommand(payload);
+            int status = response.getStatus();
 
-        Callback<Response> callback = new Callback<Response>() {
-
-            @Override
-            public void success(Response response, Response response2) {
-                int status = response.getStatus();
+            if(status == 200) {
 
                 System.out.println("Status: " + status);
 
@@ -56,40 +77,61 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 String outputStr = new String(body.getBytes());
                 System.out.print(outputStr);
 
-                JSONObject resp = new JSONObject();
+                final JSONObject resp = new JSONObject();
                 try {
                     Gson gson = new Gson();
                     resp.put("status", response.getStatus());
                     resp.put("payload", gson.toJson(payload));
-                    if(observer != null) {
-                        observer.setText(resp.toString());
+                    if (observer != null) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                observer.setText(resp.toString());
+                            }
+                        });
                     }
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
 
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
+                return resp;
+            } else {
                 System.out.println("Error");
-                if(observer != null && error != null) {
-                    String localizedMessage = error.getLocalizedMessage();
-                    observer.setText("Connectivity Error: " + localizedMessage);
+                if(observer != null) {
+                    final String localizedMessage = response.getReason();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            observer.setText("Connectivity Error: " + localizedMessage);
+                        }
+                    });
+
                 }
                 JSONObject resp = new JSONObject();
                 try {
-                    resp.put("status", error.getBody());
-                    resp.put("error", error.getMessage());
+                    resp.put("status", response.getBody());
+                    resp.put("error", response.getReason());
                     resp.put("payload", payload);
 
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-            }
-        };
-        communicatorInterface.sendCommand(payload, callback);
 
+                return resp;
+            }
+        }catch(Throwable ex){
+            if(observer != null) {
+                final String localizedMessage = ex.getLocalizedMessage();
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        observer.setText("Connectivity Error: " + localizedMessage);
+                    }
+                });
+
+            }
+        }
         return null;
     }
 
@@ -126,6 +168,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 }
             }
         };
+        System.out.println("------------------ sendAccelerometer ---------------");
         communicatorInterface.sendAccelerometer(payload, callback);
 
         return null;

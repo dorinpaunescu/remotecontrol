@@ -1,9 +1,11 @@
 package com.example.dorinpaunescu.remotecontrol;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
@@ -28,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -132,16 +135,16 @@ public class ControlFragment extends Fragment {
         final Button buttonDown = (Button)view.findViewById(R.id.buttonMoveDown);
         final Button buttonStop = (Button)view.findViewById(R.id.stopButton);
 
-        final class ControllerOnClickListener implements View.OnClickListener{
+        final class AsyncExecutor extends AsyncTask<String, String, String> {
 
+            View view;
 
-            public ControllerOnClickListener(){
-                lastMovement = new MovementEnvelope("0", "0");
+            public AsyncExecutor(View observer){
+                this.view = observer;
             }
 
             @Override
-            public void onClick(View view) {
-
+            protected String doInBackground(String... params) {
                 ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
                 RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
 
@@ -167,20 +170,20 @@ public class ControlFragment extends Fragment {
                         remoteController.sendCommand(leftEnvelope);
 
                         if(lastLeft == 0 && lastRight == 0) {
-                            return;
+                            return null;
                         }
                     }
 
                     try {
-                        System.out.println("Sleep for 700 ms");
-                        Thread.sleep(700);
+                        System.out.println("Sleep for 200 ms");
+                        Thread.sleep(200);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     remoteController.sendCommand(lastMovement);
 
-                    return;
+                    return null;
                 }
 
                 if(buttonRight.equals(view)) {
@@ -205,42 +208,28 @@ public class ControlFragment extends Fragment {
                         remoteController.sendCommand(leftEnvelope);
 
                         if(lastLeft == 0 && lastRight == 0) {
-                            return;
+                            return null;
                         }
                     }
 
                     try {
-                        System.out.println("Sleep for 700 ms");
-                        Thread.sleep(700);
+                        System.out.println("Sleep for 200 ms");
+                        Thread.sleep(200);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     remoteController.sendCommand(lastMovement);
 
-                    return;
+                    return null;
                 }
 
                 if(buttonUp.equals(view)) {
-                    try {
-                        System.out.println("Sleep for 250 ms");
-                        Thread.sleep(250);
-                        System.out.println("Resume ...");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     remoteController.sendCommand(new MovementEnvelope("255", "255"));
                     lastMovement = new MovementEnvelope("255", "255");
                 }
 
                 if(buttonDown.equals(view)) {
-                    try {
-                        System.out.println("Sleep for 250 ms");
-                        Thread.sleep(250);
-                        System.out.println("Resume ...");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     remoteController.sendCommand(new MovementEnvelope("-255", "-255"));
                     lastMovement = new MovementEnvelope("-255", "-255");
                 }
@@ -249,6 +238,20 @@ public class ControlFragment extends Fragment {
                     remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     lastMovement = new MovementEnvelope("0", "0");
                 }
+                return null;
+            }
+        }
+
+        final class ControllerOnClickListener implements View.OnClickListener{
+            public ControllerOnClickListener(){
+                lastMovement = new MovementEnvelope("0", "0");
+            }
+
+            @Override
+            public void onClick(View view) {
+                AsyncExecutor asynExec = new AsyncExecutor(view);
+                AsyncTask<String, String, String> execute = asynExec.execute();
+
             }
         }
 

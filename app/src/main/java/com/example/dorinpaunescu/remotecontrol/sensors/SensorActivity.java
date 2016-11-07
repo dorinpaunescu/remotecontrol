@@ -1,12 +1,9 @@
 package com.example.dorinpaunescu.remotecontrol.sensors;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
@@ -78,7 +75,7 @@ public class SensorActivity implements SensorEventListener {
         last = now;
       }
     }catch (Throwable ex) {
-
+        System.out.println("Some critical error happened: " + ex.getLocalizedMessage());
     }
   }
 

@@ -117,8 +117,6 @@ public class TabAccelerometru extends Fragment{
         if(sensorListener == null) {
             sensorListener = new SensorActivity(null, null, null);
         }
-
-        mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
