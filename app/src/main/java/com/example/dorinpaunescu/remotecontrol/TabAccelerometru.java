@@ -82,6 +82,7 @@ public class TabAccelerometru extends Fragment{
             sensorListener.setTxX((TextView) view.findViewById(R.id.textViewX));
             sensorListener.setTxY((TextView) view.findViewById(R.id.textViewY));
             sensorListener.setTxZ((TextView) view.findViewById(R.id.textViewZ));
+            sensorListener.setStatus((TextView) view.findViewById(R.id.textStatus));
         }
 
                 // Inflate the layout for this fragment

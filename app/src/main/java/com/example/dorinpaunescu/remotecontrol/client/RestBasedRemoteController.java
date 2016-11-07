@@ -1,9 +1,11 @@
 package com.example.dorinpaunescu.remotecontrol.client;
 
 import android.app.Activity;
+import android.app.admin.SystemUpdatePolicy;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.SyncStatusObserver;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -143,11 +145,21 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
             public void success(Response response, Response response2) {
                 int status = response.getStatus();
 
-                System.out.println("Status: " + status);
+                System.out.println("Status acc: " + status);
 
                 TypedByteArray body = (TypedByteArray) response.getBody();
                 String outputStr = new String(body.getBytes());
-                System.out.print(outputStr);
+
+                System.out.println("Done processing async data");
+
+                if (observer != null) {
+                    System.out.println("Update observer");
+                    observer.setText("Status: " + status);
+                } else {
+                    System.out.println("Observer is null");
+                }
+
+                System.out.print(outputStr + " " +observer);
             }
 
             @Override

@@ -12,6 +12,8 @@ import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
 
+import org.w3c.dom.Text;
+
 import java.util.Date;
 
 public class SensorActivity implements SensorEventListener {
@@ -19,6 +21,8 @@ public class SensorActivity implements SensorEventListener {
   private TextView txX;
   private TextView txY;
   private TextView txZ;
+
+    private TextView status;
 
   public void setTxX(TextView txX) {
     this.txX = txX;
@@ -32,7 +36,11 @@ public class SensorActivity implements SensorEventListener {
     this.txZ = txZ;
   }
 
-  public SensorActivity(TextView txX, TextView txY, TextView txZ){
+    public void setStatus(TextView status) {
+        this.status = status;
+    }
+
+    public SensorActivity(TextView txX, TextView txY, TextView txZ){
     this.txX = txX;
     this.txY = txY;
     this.txZ = txZ;
@@ -64,18 +72,24 @@ public class SensorActivity implements SensorEventListener {
       this.txZ.setText("Z=" + z);
     }
     // Do something with this sensor value.
-    try{
+      //
       Date now = new Date();
+    try{
+
       if(now.getTime() - last.getTime() > 2000) {
         System.out.println("onSensorChanged");
         AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
         ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
-        RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, null);
+        RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, status);
         remoteController.sendAccelerometerDate(ae);
         last = now;
       }
     }catch (Throwable ex) {
+        last = now;
         System.out.println("Some critical error happened: " + ex.getLocalizedMessage());
+        if(status != null) {
+            status.setText(ex.getLocalizedMessage());
+        }
     }
   }
 
