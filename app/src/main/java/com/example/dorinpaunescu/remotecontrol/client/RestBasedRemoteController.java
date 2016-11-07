@@ -67,6 +67,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -167,7 +168,10 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
         okHttpClient.interceptors().add(new Interceptor() {
             @Override
             public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
-                return onOnIntercept(chain);
+                com.squareup.okhttp.Response response = onOnIntercept(chain);
+                response.body().string();
+                response.body().close();
+                return response;
             }
         });
 
