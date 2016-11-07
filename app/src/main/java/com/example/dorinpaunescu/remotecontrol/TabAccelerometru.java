@@ -167,4 +167,34 @@ public class TabAccelerometru extends Fragment{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("TabAccelerometru: onPause");
+        try {
+            System.out.println("Deregister sensor listener");
+            if(mSensorManager!=null) {
+                mSensorManager.unregisterListener(sensorListener);
+            }
+        }catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("TabAccelerometru: onResume");
+        try {
+            System.out.println("Register sensor listener");
+            if(mSensorManager!=null) {
+                mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        }catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
 }

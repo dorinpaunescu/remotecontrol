@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
     @Override
     protected void onStop(){
         super.onStop();
+        System.out.println("On stop app");
         PropConfigHolder.getInstance().save();
     }
 }
