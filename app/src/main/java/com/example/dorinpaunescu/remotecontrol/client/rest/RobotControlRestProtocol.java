@@ -20,7 +20,7 @@ public interface RobotControlRestProtocol {
     @Headers({
             "Content-Type: application/json"
     })
-    @POST("/testpost")
+    @POST("/send/command/robot")
     Response sendCommand(@Body Object payload);
 
     @Headers({
