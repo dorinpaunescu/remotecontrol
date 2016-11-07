@@ -150,11 +150,11 @@ public class ControlFragment extends Fragment {
                         int lastLeft = Integer.parseInt(lastMovement.left);
                         int lastRight = Integer.parseInt(lastMovement.right);
 
-                        int newLeft = lastLeft - 10;
-                        int newRight = lastRight + 10;
+                        int newLeft = 0;
+                        int newRight = lastRight + 55;
                         if(lastLeft == 0 && lastRight == 0) {
-                            newLeft = lastLeft - 50;
-                            newRight = lastRight + 50;
+                            newLeft = 0;
+                            newRight = 200;
                         }
 
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
@@ -163,8 +163,8 @@ public class ControlFragment extends Fragment {
 
 
                     try {
-                        System.out.println("Sleep for 1000 ms");
-                        Thread.sleep(1000);
+                        System.out.println("Sleep for 100 ms");
+                        Thread.sleep(100);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -179,19 +179,19 @@ public class ControlFragment extends Fragment {
                         int lastLeft = Integer.parseInt(lastMovement.left);
                         int lastRight = Integer.parseInt(lastMovement.right);
 
-                        int newLeft = lastLeft - 10;
-                        int newRight = lastRight + 10;
+                        int newLeft = lastLeft - 55;
+                        int newRight = 0;
                         if(lastLeft == 0 && lastRight == 0) {
-                            newLeft = lastLeft + 50;
-                            newRight = lastRight - 50;
+                            newLeft = 200;
+                            newRight = 0;
                         }
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
                     }
 
                     try {
-                        System.out.println("Sleep for 1000 ms");
-                        Thread.sleep(1000);
+                        System.out.println("Sleep for 100 ms");
+                        Thread.sleep(100);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -204,27 +204,27 @@ public class ControlFragment extends Fragment {
                 if(buttonUp.equals(view)) {
                     remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     try {
-                        System.out.println("Sleep for 1000 ms");
-                        Thread.sleep(1000);
+                        System.out.println("Sleep for 250 ms");
+                        Thread.sleep(250);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    remoteController.sendCommand(new MovementEnvelope("120", "120"));
-                    lastMovement = new MovementEnvelope("120", "120");
+                    remoteController.sendCommand(new MovementEnvelope("255", "255"));
+                    lastMovement = new MovementEnvelope("255", "255");
                 }
 
                 if(buttonDown.equals(view)) {
                     remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     try {
-                        System.out.println("Sleep for 1000 ms");
-                        Thread.sleep(1000);
+                        System.out.println("Sleep for 250 ms");
+                        Thread.sleep(250);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    remoteController.sendCommand(new MovementEnvelope("-120", "-120"));
-                    lastMovement = new MovementEnvelope("-120", "-120");
+                    remoteController.sendCommand(new MovementEnvelope("-255", "-255"));
+                    lastMovement = new MovementEnvelope("-255", "-255");
                 }
 
                 if(buttonStop.equals(view)) {

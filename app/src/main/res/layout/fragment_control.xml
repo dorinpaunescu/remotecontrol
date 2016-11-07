@@ -11,9 +11,14 @@
         android:orientation="vertical" >
         <TextView
             android:layout_width="match_parent"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="30dp"
             android:layout_height="40mm"
             android:layout_gravity="center_vertical"
             android:id="@+id/textViewOutput"
+            android:text="Status:"
             android:background="@drawable/my_border" />
 
 
