@@ -151,10 +151,16 @@ public class ControlFragment extends Fragment {
                         int lastRight = Integer.parseInt(lastMovement.right);
 
                         int newLeft = 0;
-                        int newRight = lastRight + 55;
+                        int newRight = lastRight - 55;
+
                         if(lastLeft == 0 && lastRight == 0) {
                             newLeft = 0;
                             newRight = 200;
+                        }
+
+                        if(lastLeft < 0 && lastRight < 0) {
+                            newLeft = lastLeft + 55;
+                            newRight = 0;
                         }
 
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
@@ -163,8 +169,8 @@ public class ControlFragment extends Fragment {
 
 
                     try {
-                        System.out.println("Sleep for 100 ms");
-                        Thread.sleep(100);
+                        System.out.println("Sleep for 700 ms");
+                        Thread.sleep(700);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -181,17 +187,24 @@ public class ControlFragment extends Fragment {
 
                         int newLeft = lastLeft - 55;
                         int newRight = 0;
+
                         if(lastLeft == 0 && lastRight == 0) {
                             newLeft = 200;
                             newRight = 0;
                         }
+
+                        if(lastLeft < 0 && lastRight < 0) {
+                            newLeft = 0;
+                            newRight = lastRight + 55;
+                        }
+
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
                     }
 
                     try {
-                        System.out.println("Sleep for 100 ms");
-                        Thread.sleep(100);
+                        System.out.println("Sleep for 700 ms");
+                        Thread.sleep(700);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -202,7 +215,6 @@ public class ControlFragment extends Fragment {
                 }
 
                 if(buttonUp.equals(view)) {
-                    remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     try {
                         System.out.println("Sleep for 250 ms");
                         Thread.sleep(250);
@@ -215,7 +227,6 @@ public class ControlFragment extends Fragment {
                 }
 
                 if(buttonDown.equals(view)) {
-                    remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     try {
                         System.out.println("Sleep for 250 ms");
                         Thread.sleep(250);
