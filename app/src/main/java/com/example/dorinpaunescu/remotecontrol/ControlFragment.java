@@ -160,9 +160,11 @@ public class ControlFragment extends Fragment {
                         MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft,"" + newRight);
                         remoteController.sendCommand(leftEnvelope);
                     }
+
+
                     try {
-                        System.out.println("Sleep for 2000 ms");
-                        Thread.sleep(2000);
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -188,8 +190,8 @@ public class ControlFragment extends Fragment {
                     }
 
                     try {
-                        System.out.println("Sleep for 2000 ms");
-                        Thread.sleep(2000);
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -202,8 +204,8 @@ public class ControlFragment extends Fragment {
                 if(buttonUp.equals(view)) {
                     remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     try {
-                        System.out.println("Sleep for 2000 ms");
-                        Thread.sleep(2000);
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -215,8 +217,8 @@ public class ControlFragment extends Fragment {
                 if(buttonDown.equals(view)) {
                     remoteController.sendCommand(new MovementEnvelope("0", "0"));
                     try {
-                        System.out.println("Sleep for 2000 ms");
-                        Thread.sleep(2000);
+                        System.out.println("Sleep for 1000 ms");
+                        Thread.sleep(1000);
                         System.out.println("Resume ...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
