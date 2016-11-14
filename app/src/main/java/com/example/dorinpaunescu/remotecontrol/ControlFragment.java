@@ -24,11 +24,11 @@ import com.example.dorinpaunescu.remotecontrol.envelope.MovementEnvelope;
 import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
-import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -128,6 +128,18 @@ public class ControlFragment extends Fragment {
                 }
             }
         });*/
+
+        AsyncTask<String, String, String> asyncImgRecognition = new AsyncTask<String, String, String>() {
+
+            @Override
+            protected String doInBackground(String... params) {
+
+
+                return null;
+            }
+        };
+
+       asyncImgRecognition.execute();
 
         final TextView tView = (TextView)view.findViewById(R.id.textViewOutput);
         final Button buttonUp = (Button)view.findViewById(R.id.buttonMoveUp);

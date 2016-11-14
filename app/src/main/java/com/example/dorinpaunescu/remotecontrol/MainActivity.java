@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ControlFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener
-        ,TabAccelerometru.OnFragmentInteractionListener{
+        ,TabAccelerometru.OnFragmentInteractionListener, ImageRecognition.OnFragmentInteractionListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
                     return new SettingsFragment();
                 case 2:
                     return new TabAccelerometru();
+                case 3:
+                    return new ImageRecognition();
 
             }
 
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
@@ -151,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
                     return "Settings";
                 case 2:
                     return "Accelerometru";
+                case 3:
+                    return "Recognize Image";
             }
             return null;
         }
