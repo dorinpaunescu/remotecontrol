@@ -158,33 +158,48 @@ public class ImageRecognition extends Fragment {
 
                 @Override
                 protected String doInBackground(String... params) {
-                    System.out.println("1");
-                    VisualRecognition service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
-                    service.setApiKey("836e3ac7ea53d7bb833fa8268490931360567235");
-
-                    System.out.println("Classify an image");
-                    ClassifyImagesOptions options = new ClassifyImagesOptions.Builder()
-                            .images(new File(params[0]))
-                            .build();
-                    System.out.println("2");
-
-                    final VisualClassification result = service.classify(options).execute();
-                    System.out.println(result);
 
                     FragmentActivity activity = getActivity();
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            responseDisplay.setText(result.toString());
+                    try{
+                        VisualRecognition service = new VisualRecognition(VisualRecognition.VERSION_DATE_2016_05_20);
+                        service.setApiKey("836e3ac7ea53d7bb833fa8268490931360567235");
+
+                        System.out.println("Classify an image");
+                        ClassifyImagesOptions options = new ClassifyImagesOptions.Builder()
+                                .images(new File(params[0]))
+                                .build();
+
+                        final VisualClassification result = service.classify(options).execute();
+                        System.out.println(result);
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                responseDisplay.setText(result.toString());
+                            }
+                        });
+                    }catch (final Throwable ex) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                responseDisplay.setText(ex.getLocalizedMessage());
+                            }
+                        });
+                        ex.printStackTrace();
+                    } finally {
+                        File file = new File(params[0]);
+                        try
+                        {
+                            file.delete();
+                        }catch (Exception ioEx) {
+                            ioEx.printStackTrace();
                         }
-                    });
+                    }
                     return null;
                 }
             };
 
             asyncNetwork.execute(fileName.getAbsolutePath());
-
-
         }
     }
 
