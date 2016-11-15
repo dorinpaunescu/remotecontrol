@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,21 +146,19 @@ public class TabAccelerometru extends Fragment{
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        System.out.println("Is visible " + isVisibleToUser);
-
-
+        System.out.println("Is visible to user" + isVisibleToUser);
 
         try {
             if (isVisibleToUser) {
 
                 System.out.println("Register sensor listener");
                 if(mSensorManager!= null) {
-                    mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                   mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 }
             } else {
                 System.out.println("Deregister sensor listener");
                 if(mSensorManager!=null) {
-                    mSensorManager.unregisterListener(sensorListener);
+                  mSensorManager.unregisterListener(sensorListener);
                 }
             }
         }catch (Throwable e) {
@@ -186,6 +185,13 @@ public class TabAccelerometru extends Fragment{
     public void onResume() {
         super.onResume();
         System.out.println("TabAccelerometru: onResume");
+        System.out.println("Is visible to user: " + getUserVisibleHint());
+
+        if(!getUserVisibleHint()) {
+            System.out.println("Is not visible to user");
+            return;
+        }
+
         try {
             System.out.println("Register sensor listener");
             if(mSensorManager!=null) {

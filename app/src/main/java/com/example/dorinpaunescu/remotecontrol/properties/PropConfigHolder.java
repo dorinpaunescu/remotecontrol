@@ -49,24 +49,31 @@ public class PropConfigHolder {
         }
 
         String URL = settings.getString("URL", Constants.EMPTY_STRING);
-        if(URL == null) {
+        if(URL == null || URL.isEmpty()) {
             properties.put("URL", "http://sample.com");
         } else {
             properties.put("URL", URL);
         }
 
         String USERNAME = settings.getString("USERNAME", Constants.EMPTY_STRING);
-        if(USERNAME == null) {
+        if(USERNAME == null || USERNAME.isEmpty()) {
             properties.put("USERNAME", "Edit Username");
         } else {
             properties.put("USERNAME", USERNAME);
         }
 
         String PASSWORD = settings.getString("PASSWORD", Constants.EMPTY_STRING);
-        if(PASSWORD == null) {
+        if(PASSWORD == null || PASSWORD.isEmpty()) {
             properties.put("PASSWORD", "Edit Password");
         } else {
             properties.put("PASSWORD", PASSWORD);
+        }
+
+        String ACC_REQ_DELAY = settings.getString("ACC_REQ_DELAY", Constants.EMPTY_STRING);
+        if(ACC_REQ_DELAY == null || ACC_REQ_DELAY.isEmpty()) {
+            properties.put("ACC_REQ_DELAY", "1000");
+        } else {
+            properties.put("ACC_REQ_DELAY", ACC_REQ_DELAY);
         }
 
         return this;

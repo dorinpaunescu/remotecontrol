@@ -6,15 +6,18 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.widget.TextView;
 
+import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
 import com.example.dorinpaunescu.remotecontrol.envelope.AccelerometerEnvelope;
 import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
 import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
+import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
 
 import org.w3c.dom.Text;
 
 import java.util.Date;
+import java.util.Map;
 
 public class SensorActivity implements SensorEventListener {
 
@@ -76,7 +79,9 @@ public class SensorActivity implements SensorEventListener {
       Date now = new Date();
     try{
 
-      if(now.getTime() - last.getTime() > 2000) {
+      Map<String, String> properties = PropConfigHolder.getInstance().getProperties();
+      long delay = Long.parseLong(properties.get(Constants.ACC_REQ_DELAY));
+      if(now.getTime() - last.getTime() > delay) {
         System.out.println("onSensorChanged");
         AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
         ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);

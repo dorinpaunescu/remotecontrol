@@ -2,6 +2,7 @@ package com.example.dorinpaunescu.remotecontrol.adapters;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class MultiColumnAdapter extends BaseAdapter{
                 public void onClick(View v) {
                     System.out.println(map.get(Constants.FIRST_COLUMN));
 
+                    final Context ctx = v.getContext();
                     final AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
                     final EditText input = new EditText(v.getContext());
                     input.setText(map.get(Constants.SECOND_COLUMN));
@@ -79,6 +81,27 @@ public class MultiColumnAdapter extends BaseAdapter{
                         public void onClick(DialogInterface dialog, int whichButton) {
 
                             String value = input.getText().toString().trim();
+                            String propertyName = map.get(Constants.FIRST_COLUMN);
+                            if(propertyName.equals(Constants.ACC_REQ_DELAY)) {
+                                try {
+                                    Integer.parseInt(value);
+                                }catch (NumberFormatException nfe) {
+                                    AlertDialog.Builder errorNfe = new AlertDialog.Builder(ctx);
+                                    errorNfe.setTitle("Error: Invalid input");
+                                    TextView message = new TextView(ctx);
+                                    message.setText("Invalid format for: " + value);
+                                    errorNfe.setView(message);
+
+                                    errorNfe.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                                    errorNfe.show();
+                                    return;
+                                }
+                            }
                             map.put(Constants.SECOND_COLUMN, value);
                             notifyDataSetChanged();
                             PropConfigHolder.getInstance().getProperties().put(map.get(Constants.FIRST_COLUMN), value);

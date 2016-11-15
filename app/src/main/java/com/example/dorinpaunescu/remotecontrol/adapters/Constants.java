@@ -11,4 +11,5 @@ public class Constants {
     public static String URL = "URL";
     public static String USERNAME = "USERNAME";
     public static String PASSWORD = "PASSWORD";
+    public static String ACC_REQ_DELAY = "ACC_REQ_DELAY";
 }
