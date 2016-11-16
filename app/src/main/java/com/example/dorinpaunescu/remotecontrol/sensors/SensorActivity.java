@@ -69,15 +69,19 @@ public class SensorActivity implements SensorEventListener {
     float y = event.values[1];
     float z = event.values[2];
 
+      String xStr = String.format("%.3f", x);
+      String yStr = String.format("%.3f", y);
+      String zStr = String.format("%.3f", z);
+
     if(this.txX != null) {
-      this.txX.setText("X=" + x);
+      this.txX.setText("X=" + xStr);
     }
     if(this.txY != null) {
-      this.txY.setText("Y=" + y);
+      this.txY.setText("Y=" + yStr);
     }
 
     if(this.txZ != null) {
-      this.txZ.setText("Z=" + z);
+      this.txZ.setText("Z=" + zStr);
     }
     // Do something with this sensor value.
       //
@@ -89,7 +93,7 @@ public class SensorActivity implements SensorEventListener {
       if(now.getTime() - last.getTime() > delay) {
         System.out.println("onSensorChanged");
           if(this.remoteController != null) {
-              AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
+              AccelerometerEnvelope ae = new AccelerometerEnvelope(xStr, yStr, zStr);
               remoteController.sendAccelerometerDate(ae, status);
           }
         last = now;

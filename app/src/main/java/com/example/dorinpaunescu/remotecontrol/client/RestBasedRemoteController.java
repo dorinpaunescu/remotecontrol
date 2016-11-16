@@ -159,8 +159,6 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                     System.out.println("Observer is null");
                 }
 
-                System.out.print(outputStr + " " +observer);
-
                 /*AsyncTask<String, String, String> asyncPurgeConnections = new AsyncTask<String, String, String>() {
 
                     @Override
