@@ -16,9 +16,8 @@ import com.example.dorinpaunescu.remotecontrol.adapters.Constants;
 import com.example.dorinpaunescu.remotecontrol.client.rest.RobotControlRestProtocol;
 import com.example.dorinpaunescu.remotecontrol.properties.PropConfigHolder;
 import com.google.gson.Gson;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.ResponseBody;
+import com.jakewharton.retrofit.Ok3Client;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +28,8 @@ import java.net.Proxy;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -148,7 +149,9 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 System.out.println("Status acc: " + status);
 
                 TypedByteArray body = (TypedByteArray) response.getBody();
+                TypedByteArray body2 = (TypedByteArray) response.getBody();
                 String outputStr = new String(body.getBytes());
+
 
                 System.out.println("Done processing async data");
 
@@ -217,24 +220,32 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
         User user = new User(properties.get(Constants.USERNAME), properties.get(Constants.PASSWORD));
 
-        final OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.setConnectTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.interceptors().add(new Interceptor() {
+        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
+        /*okHttpClient.interceptors().add(new Interceptor() {
             @Override
-            public com.squareup.okhttp.Response intercept(Chain chain) throws IOException {
+            public com.squareup.okhttp.Response intercept(Interceptor.Chain chain) throws IOException {
                 com.squareup.okhttp.Response response = onOnIntercept(chain);
-                response.body().string();
-                response.body().close();
+                ResponseBody body = response.body();
+                System.out.println("-------------- Before closing body -----------");
+                try {
+                    body.close();
+                }catch (Throwable ex) {
+                    ex.printStackTrace();
+                }finally {
+
+                }
                 return response;
             }
-        });
+        });*/
 
+
+
+        OkHttpClient client = httpBuilder.build();
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(new ApiRequestInterceptor(user))
                 .setEndpoint(properties.get(Constants.URL))
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setClient(new OkClient(okHttpClient))
+                .setClient(new Ok3Client(client))
                 .build();
         communicatorInterface = restAdapter.create(RobotControlRestProtocol.class);
 
@@ -242,7 +253,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
     }
 
-    private com.squareup.okhttp.Response onOnIntercept(Interceptor.Chain chain) throws IOException {
+    /*private com.squareup.okhttp.Response onOnIntercept(Interceptor.Chain chain) throws IOException {
         try {
             com.squareup.okhttp.Response response = chain.proceed(chain.request());
             String content = "Successfull";
@@ -253,7 +264,8 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
             System.out.println(exception.getMessage());
             System.out.println(exception.getLocalizedMessage());
             System.out.println("---------------------FATAL ERROR END------------------");
-            throw exception;
         }
-    }
+
+        return chain.proceed(chain.request());
+    }*/
 }

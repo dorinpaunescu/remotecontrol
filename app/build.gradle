@@ -29,7 +29,8 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile group: 'com.squareup.okhttp', name: 'okhttp', version: '2.7.5'
+    compile 'com.squareup.okhttp3:okhttp:3.0.0'
+	compile 'com.jakewharton.retrofit:retrofit1-okhttp3-client:1.0.2' 
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.ibm.watson.developer_cloud:java-sdk:3.5.1'
     testCompile 'junit:junit:4.12'
