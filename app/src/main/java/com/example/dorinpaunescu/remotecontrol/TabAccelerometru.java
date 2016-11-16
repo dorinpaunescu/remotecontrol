@@ -169,7 +169,7 @@ public class TabAccelerometru extends Fragment{
                     RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
                     sensorListener.setRemoteConnector(remoteController);
 
-                   mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_UI);
+                   mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 }
             } else {
                 System.out.println("Deregister sensor listener");
