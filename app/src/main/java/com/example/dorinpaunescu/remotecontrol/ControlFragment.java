@@ -162,7 +162,7 @@ public class ControlFragment extends Fragment {
                 try {
 
                     ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
-                    RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, tView);
+                    RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
 
                     if (buttonLeft.equals(view)) {
                         if (lastMovement != null) {
@@ -183,7 +183,7 @@ public class ControlFragment extends Fragment {
                             }
 
                             MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft, "" + newRight);
-                            remoteController.sendCommand(leftEnvelope);
+                            remoteController.sendCommand(leftEnvelope, tView);
 
                             if (lastLeft == 0 && lastRight == 0) {
                                 return null;
@@ -197,7 +197,7 @@ public class ControlFragment extends Fragment {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        remoteController.sendCommand(lastMovement);
+                        remoteController.sendCommand(lastMovement, tView);
 
                         return null;
                     }
@@ -221,7 +221,7 @@ public class ControlFragment extends Fragment {
                             }
 
                             MovementEnvelope leftEnvelope = new MovementEnvelope("" + newLeft, "" + newRight);
-                            remoteController.sendCommand(leftEnvelope);
+                            remoteController.sendCommand(leftEnvelope, tView);
 
                             if (lastLeft == 0 && lastRight == 0) {
                                 return null;
@@ -235,23 +235,23 @@ public class ControlFragment extends Fragment {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        remoteController.sendCommand(lastMovement);
+                        remoteController.sendCommand(lastMovement,tView);
 
                         return null;
                     }
 
                     if (buttonUp.equals(view)) {
-                        remoteController.sendCommand(new MovementEnvelope("255", "255"));
+                        remoteController.sendCommand(new MovementEnvelope("255", "255"), tView);
                         lastMovement = new MovementEnvelope("255", "255");
                     }
 
                     if (buttonDown.equals(view)) {
-                        remoteController.sendCommand(new MovementEnvelope("-255", "-255"));
+                        remoteController.sendCommand(new MovementEnvelope("-255", "-255"), tView);
                         lastMovement = new MovementEnvelope("-255", "-255");
                     }
 
                     if (buttonStop.equals(view)) {
-                        remoteController.sendCommand(new MovementEnvelope("0", "0"));
+                        remoteController.sendCommand(new MovementEnvelope("0", "0"), tView);
                         lastMovement = new MovementEnvelope("0", "0");
                     }
                 }catch(final Throwable ex) {

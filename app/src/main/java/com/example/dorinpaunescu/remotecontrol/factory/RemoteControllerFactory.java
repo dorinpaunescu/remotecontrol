@@ -14,10 +14,10 @@ public class RemoteControllerFactory implements ResourceManagerFactory{
     public static String REST_BASED_REMOTE_CONTROLLER = "REST_BASED_REMOTE_CONTROLLER";
 
     @Override
-    public RemoteControllerProtocol createRemoteController(String remoteControllerType, View observer) {
+    public RemoteControllerProtocol createRemoteController(String remoteControllerType) {
 
         if(remoteControllerType.equalsIgnoreCase(REST_BASED_REMOTE_CONTROLLER)) {
-            return new RestBasedRemoteController((TextView) observer);
+            return new RestBasedRemoteController();
         }
 
         return null;

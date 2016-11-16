@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.dorinpaunescu.remotecontrol.client.RemoteControllerProtocol;
+import com.example.dorinpaunescu.remotecontrol.factory.RemoteControllerFactory;
+import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerFactory;
+import com.example.dorinpaunescu.remotecontrol.factory.ResourceManagerProducer;
 import com.example.dorinpaunescu.remotecontrol.sensors.SensorActivity;
 
 import java.util.List;
@@ -83,7 +87,15 @@ public class TabAccelerometru extends Fragment{
             sensorListener.setTxX((TextView) view.findViewById(R.id.textViewX));
             sensorListener.setTxY((TextView) view.findViewById(R.id.textViewY));
             sensorListener.setTxZ((TextView) view.findViewById(R.id.textViewZ));
-            sensorListener.setStatus((TextView) view.findViewById(R.id.textStatus));
+
+            TextView status = (TextView) view.findViewById(R.id.textStatus);
+
+            sensorListener.setStatus(status);
+            ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+            RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
+
+            sensorListener.setRemoteConnector(remoteController);
+
         }
 
                 // Inflate the layout for this fragment
@@ -153,12 +165,17 @@ public class TabAccelerometru extends Fragment{
 
                 System.out.println("Register sensor listener");
                 if(mSensorManager!= null) {
+                    ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+                    RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
+                    sensorListener.setRemoteConnector(remoteController);
+
                    mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 }
             } else {
                 System.out.println("Deregister sensor listener");
                 if(mSensorManager!=null) {
                   mSensorManager.unregisterListener(sensorListener);
+                    sensorListener.setRemoteConnector(null);
                 }
             }
         }catch (Throwable e) {
@@ -195,6 +212,9 @@ public class TabAccelerometru extends Fragment{
         try {
             System.out.println("Register sensor listener");
             if(mSensorManager!=null) {
+                ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
+                RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER);
+                sensorListener.setRemoteConnector(remoteController);
                 mSensorManager.registerListener(sensorListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }catch (Throwable ex) {

@@ -24,6 +24,7 @@ public class SensorActivity implements SensorEventListener {
   private TextView txX;
   private TextView txY;
   private TextView txZ;
+    private RemoteControllerProtocol remoteController;
 
     private TextView status;
 
@@ -43,10 +44,14 @@ public class SensorActivity implements SensorEventListener {
         this.status = status;
     }
 
+    public void setRemoteConnector(RemoteControllerProtocol remoteController){
+        this.remoteController = remoteController;
+    }
+
     public SensorActivity(TextView txX, TextView txY, TextView txZ){
-    this.txX = txX;
-    this.txY = txY;
-    this.txZ = txZ;
+          this.txX = txX;
+        this.txY = txY;
+        this.txZ = txZ;
   }
 
   @Override
@@ -83,10 +88,10 @@ public class SensorActivity implements SensorEventListener {
       long delay = Long.parseLong(properties.get(Constants.ACC_REQ_DELAY));
       if(now.getTime() - last.getTime() > delay) {
         System.out.println("onSensorChanged");
-        AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
-        ResourceManagerFactory factoryManager = ResourceManagerProducer.getFactoryManager(ResourceManagerProducer.REMOTE_CONTROLLER_TYPE);
-        RemoteControllerProtocol remoteController = factoryManager.createRemoteController(RemoteControllerFactory.REST_BASED_REMOTE_CONTROLLER, status);
-        remoteController.sendAccelerometerDate(ae);
+          if(this.remoteController != null) {
+              AccelerometerEnvelope ae = new AccelerometerEnvelope(Float.toString(x), Float.toString(y), Float.toString(z));
+              remoteController.sendAccelerometerDate(ae, status);
+          }
         last = now;
       }
     }catch (Throwable ex) {

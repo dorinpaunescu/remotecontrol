@@ -46,14 +46,8 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
     RobotControlRestProtocol communicatorInterface;
     OkHttpClient httpClient;
-    TextView observer;
-    Activity activity;
 
-    public RestBasedRemoteController(TextView observer){
-        this.observer = observer;
-        if(observer != null) {
-            activity = getActivity(observer);
-        }
+    public RestBasedRemoteController(){
         initRestService();
 
     }
@@ -70,7 +64,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
     }
 
     @Override
-    public JSONObject sendCommand(final Object payload) {
+    public JSONObject sendCommand(final Object payload, final View observer) {
         try {
             Response response = communicatorInterface.sendCommand(payload);
             int status = response.getStatus();
@@ -89,10 +83,10 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                     resp.put("status", response.getStatus());
                     resp.put("payload", gson.toJson(payload));
                     if (observer != null) {
-                        activity.runOnUiThread(new Runnable() {
+                        getActivity(observer).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                observer.setText(resp.toString());
+                                ((TextView)observer).setText(resp.toString());
                             }
                         });
                     }
@@ -106,10 +100,10 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 System.out.println("Error");
                 if(observer != null) {
                     final String localizedMessage = response.getReason();
-                    activity.runOnUiThread(new Runnable() {
+                    getActivity(observer).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            observer.setText("Connectivity Error: " + localizedMessage);
+                            ((TextView)observer).setText("Connectivity Error: " + localizedMessage);
                         }
                     });
 
@@ -129,10 +123,10 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
         }catch(Throwable ex){
             if(observer != null) {
                 final String localizedMessage = ex.getLocalizedMessage();
-                activity.runOnUiThread(new Runnable() {
+                getActivity(observer).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        observer.setText("Connectivity Error: " + localizedMessage);
+                        ((TextView)observer).setText("Connectivity Error: " + localizedMessage);
                     }
                 });
 
@@ -142,7 +136,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
     }
 
     @Override
-    public JSONObject sendAccelerometerDate(final Object payload) {
+    public JSONObject sendAccelerometerDate(final Object payload,final View observer) {
         Callback<Response> callback = new Callback<Response>() {
 
             @Override
@@ -160,14 +154,14 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
                 if (observer != null) {
                     System.out.println("Update observer");
-                    observer.setText("Status: " + status);
+                    ((TextView)observer).setText("Status: " + status);
                 } else {
                     System.out.println("Observer is null");
                 }
 
                 System.out.print(outputStr + " " +observer);
 
-                AsyncTask<String, String, String> asyncPurgeConnections = new AsyncTask<String, String, String>() {
+                /*AsyncTask<String, String, String> asyncPurgeConnections = new AsyncTask<String, String, String>() {
 
                     @Override
                     protected String doInBackground(String... params) {
@@ -179,7 +173,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                         return null;
                     }
                 };
-                asyncPurgeConnections.execute();
+                asyncPurgeConnections.execute();*/
 
             }
 
@@ -188,7 +182,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 System.out.println("Error");
                 if(observer != null && error != null) {
                     String localizedMessage = error.getLocalizedMessage();
-                    observer.setText("Connectivity Error: " + localizedMessage);
+                    ((TextView)observer).setText("Connectivity Error: " + localizedMessage);
                 }
                 JSONObject resp = new JSONObject();
                 try {
@@ -243,7 +237,7 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
 
         User user = new User(properties.get(Constants.USERNAME), properties.get(Constants.PASSWORD));
 
-        ConnectionPool connPool = new ConnectionPool(5, 5, TimeUnit.SECONDS);
+        ConnectionPool connPool = new ConnectionPool(15, 2, TimeUnit.SECONDS);
         OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder().connectionPool(connPool);
 
         OkHttpClient client = httpBuilder.build();
@@ -254,7 +248,6 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(new ApiRequestInterceptor(user))
                 .setEndpoint(properties.get(Constants.URL))
-                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setClient(ok3Client)
                 .build();
         this.httpClient = client;
