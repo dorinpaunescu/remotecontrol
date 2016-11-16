@@ -13,4 +13,6 @@ public interface RemoteControllerProtocol {
     JSONObject sendAccelerometerDate(Object payload);
 
     String testGet();
+
+    public void close();
 }

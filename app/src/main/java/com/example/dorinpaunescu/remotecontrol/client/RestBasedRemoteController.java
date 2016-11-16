@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.SyncStatusObserver;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ import java.net.Proxy;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit.Callback;
@@ -43,6 +45,7 @@ import retrofit.mime.TypedByteArray;
 public class RestBasedRemoteController implements RemoteControllerProtocol {
 
     RobotControlRestProtocol communicatorInterface;
+    OkHttpClient httpClient;
     TextView observer;
     Activity activity;
 
@@ -163,6 +166,21 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
                 }
 
                 System.out.print(outputStr + " " +observer);
+
+                AsyncTask<String, String, String> asyncPurgeConnections = new AsyncTask<String, String, String>() {
+
+                    @Override
+                    protected String doInBackground(String... params) {
+                        if(httpClient != null) {
+                            ConnectionPool connectionPool = httpClient.connectionPool();
+                            connectionPool.evictAll();
+                        }
+
+                        return null;
+                    }
+                };
+                asyncPurgeConnections.execute();
+
             }
 
             @Override
@@ -214,58 +232,34 @@ public class RestBasedRemoteController implements RemoteControllerProtocol {
         return null;
     }
 
+    @Override
+    public void close() {
+
+    }
+
     public void initRestService(){
 
         Map<String, String> properties = PropConfigHolder.getInstance().getProperties();
 
         User user = new User(properties.get(Constants.USERNAME), properties.get(Constants.PASSWORD));
 
-        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder();
-        /*okHttpClient.interceptors().add(new Interceptor() {
-            @Override
-            public com.squareup.okhttp.Response intercept(Interceptor.Chain chain) throws IOException {
-                com.squareup.okhttp.Response response = onOnIntercept(chain);
-                ResponseBody body = response.body();
-                System.out.println("-------------- Before closing body -----------");
-                try {
-                    body.close();
-                }catch (Throwable ex) {
-                    ex.printStackTrace();
-                }finally {
-
-                }
-                return response;
-            }
-        });*/
-
-
+        ConnectionPool connPool = new ConnectionPool(5, 5, TimeUnit.SECONDS);
+        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder().connectionPool(connPool);
 
         OkHttpClient client = httpBuilder.build();
+        ConnectionPool connectionPool = client.connectionPool();
+
+        Ok3Client ok3Client = new Ok3Client(client);
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setRequestInterceptor(new ApiRequestInterceptor(user))
                 .setEndpoint(properties.get(Constants.URL))
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setClient(new Ok3Client(client))
+                .setClient(ok3Client)
                 .build();
+        this.httpClient = client;
+
         communicatorInterface = restAdapter.create(RobotControlRestProtocol.class);
 
-
-
     }
-
-    /*private com.squareup.okhttp.Response onOnIntercept(Interceptor.Chain chain) throws IOException {
-        try {
-            com.squareup.okhttp.Response response = chain.proceed(chain.request());
-            String content = "Successfull";
-            return response.newBuilder().body(ResponseBody.create(response.body().contentType(), content)).build();
-        }
-        catch (Throwable exception) {
-            System.out.println("---------------------FATAL ERROR------------------");
-            System.out.println(exception.getMessage());
-            System.out.println(exception.getLocalizedMessage());
-            System.out.println("---------------------FATAL ERROR END------------------");
-        }
-
-        return chain.proceed(chain.request());
-    }*/
 }

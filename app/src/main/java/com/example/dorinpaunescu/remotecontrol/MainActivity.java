@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements ControlFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final String vmVersion = System.getProperty("java.vm.version");
+        System.out.println("VM Version: " + vmVersion);
+
         PropConfigHolder config = PropConfigHolder.getInstance().setContext(getApplicationContext()).init();
 
         setContentView(R.layout.activity_main);
